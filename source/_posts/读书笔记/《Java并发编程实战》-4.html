@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-4</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98-4">《Java并发编程实战》-4</h1>
+
+<h2 class="mume-header" id="51-%E5%90%8C%E6%AD%A5%E5%AE%B9%E5%99%A8%E7%B1%BB">5.1 同步容器类</h2>
+
+<p>Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。</p>
+<h3 class="mume-header" id="551-%E5%90%8C%E6%AD%A5%E5%AE%B9%E5%99%A8%E7%9A%84%E9%97%AE%E9%A2%98">5.5.1 同步容器的问题</h3>
+
+<p>在使用客户端加锁的Vector上的复合操作</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> Object <span class="token function">getList</span><span class="token punctuation">(</span>Vector list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> lastIndex <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> list<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>lastIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">deleteLast</span><span class="token punctuation">(</span>Vector list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> lastIndex <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        list<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>lastIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="512-%E8%BF%AD%E4%BB%A3%E5%99%A8%E4%B8%8Econcurrentmodificationexception">5.1.2 迭代器与ConcurrentModificationException</h3>
+
+<p>当容器类发现容器在迭代过程中被修改时，就会抛出一个&quot;ConcurrentModificationException<br>
+&quot;，这就是“快速失败”。</p>
+<h3 class="mume-header" id="513-%E9%9A%90%E8%97%8F%E8%BF%AD%E4%BB%A3%E5%99%A8">5.1.3 隐藏迭代器</h3>
+
+<p>正如封装对象的状态有助于维持不变性条件，封装对象的同步机制同样有助确保实施同步策略。</p>
+<h2 class="mume-header" id="52-%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8">5.2 并发容器</h2>
+
+<p>通过并发容器来代替同步容器，可以极大地提高伸缩性并降低风险。</p>
+<table>
+<thead>
+<tr>
+<th>并发容器</th>
+<th>同步容器</th>
+<th>普通容器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BlockingQueue</td>
+<td>ConcurrentLinkedQueue</td>
+<td>PriorityQueue</td>
+</tr>
+<tr>
+<td>ConcurrentHashMap, SkipListMap</td>
+<td>hashtable,  Collections.synchroniedList(TreeSet set)</td>
+<td>hashmap,SortedMap, SortedSet</td>
+</tr>
+<tr>
+<td>CopyOnWriteArrayList</td>
+<td>Vector, Collections.synchroniedList(List list)</td>
+<td>ArrayList, LinkedList</td>
+</tr>
+<tr>
+<td>CopyOnWriteArraySet, ConcurrentSkipListListSet</td>
+<td>Collections.synchroniedSet(Set set)</td>
+<td>LinkedHashSet, HashSet, TreeSet</td>
+</tr>
+</tbody>
+</table>
+<h3 class="mume-header" id="521-concurrenthashmap">5.2.1 ConcurrentHashMap</h3>
+
+<p>ConcurrentHashMap使用更细粒度的加锁机制---<strong>分段锁</strong>来实现更大程度的共享。</p>
+<p>ConcurrentHashMap具有<strong>弱一致性</strong>(Weakly Consistent)，而非&quot;及时失败&quot;。</p>
+<p>只有当应用程序需要加锁Map以进行独占访问时，才应该放弃使用ConcurrentHashMap。</p>
+<h3 class="mume-header" id="522-%E9%A2%9D%E5%A4%96%E7%9A%84%E5%8E%9F%E5%AD%90map%E6%93%8D%E4%BD%9C">5.2.2 额外的原子Map操作</h3>
+
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ConcurrentMap</span><span class="token generics function"><span class="token punctuation">&lt;</span>K<span class="token punctuation">,</span>V<span class="token punctuation">></span></span> <span class="token keyword">extends</span> <span class="token class-name">Map</span><span class="token generics function"><span class="token punctuation">&lt;</span>K<span class="token punctuation">,</span>V<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token comment">// 仅当K没有相应的映射值时才插入</span>
+    V <span class="token function">putIfAbsent</span><span class="token punctuation">(</span>K key<span class="token punctuation">,</span> V value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 仅当K被映射到oldValue时才替换为newValue</span>
+    <span class="token keyword">boolean</span> <span class="token function">remove</span><span class="token punctuation">(</span>K key<span class="token punctuation">,</span> V value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 仅当K被映射到oldValue时才替换为newValue</span>
+    <span class="token keyword">boolean</span> <span class="token function">replace</span><span class="token punctuation">(</span>K key<span class="token punctuation">,</span> V oldValue<span class="token punctuation">,</span> V newValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 仅当K被映射到某个值时才替换为newValue</span>
+    <span class="token keyword">boolean</span> <span class="token function">replace</span><span class="token punctuation">(</span>K key<span class="token punctuation">,</span> V newValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="523-copyonwritearraylist">5.2.3 CopyOnWriteArrayList</h3>
+
+<p>CopyOnWriteArrayLsit用于替代同步List，某些情况下它提供了更好的并发行性能，并且在迭代期间不需要对容器进行加锁或复制（类似地，CopyOnWriteArraySet的作用是替代同步Set）。</p>
+<p>每当修改容器时都会复制底层数组，这需要一定的开销。</p>
+<p>仅当迭代操作远远多于修改操作时，才应该使用&quot;写入时负责&quot;容器。</p>
+<h2 class="mume-header" id="53-%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%92%8C%E7%94%9F%E4%BA%A7%E8%80%85-%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%BC%8F">5.3 阻塞队列和生产者-消费者模式</h2>
+
+<p>在构建高可靠的应用程序时，有界队列是一种强大的资源管理工具:它们能抑制并防止产生过多的工作项，使应用程序在负荷过载的情况下变得更加健壮。</p>
+<p>BlockingQueue的方法:</p>
+<ul>
+<li>put 如果队列满则阻塞</li>
+<li>take 如果队列为空则阻塞</li>
+<li>offer 如果队列满则返回一个失败状态，一般是false</li>
+<li>poll 如果队列空则返回一个表示空的数据,一般是null</li>
+</ul>
+<p>BlockingQueue的多种实现:</p>
+<ul>
+<li><strong>LinkedBlockingQueue</strong> 基于链表，FIFO</li>
+<li><strong>ArrayBlockingQueue</strong> 基于数组, FIFO</li>
+<li><strong>PriorityBlockingQueue</strong> 按优先级排序的队列</li>
+<li><strong>SynchronousQueue</strong> 它不会为队列中元素维护储存空间，它维护一组线程，这些线程在等待着吧元素加入或者移出队列。</li>
+</ul>
+<h3 class="mume-header" id="531-%E7%A4%BA%E4%BE%8B%E6%A1%8C%E9%9D%A2%E6%90%9C%E7%B4%A2">5.3.1 示例:桌面搜索</h3>
+
+<h3 class="mume-header" id="532-%E4%B8%B2%E8%A1%8C%E7%BA%BF%E7%A8%8B%E5%B0%81%E9%97%AD">5.3.2 串行线程封闭</h3>
+
+<p>对象池利用了串行线程封闭，将一个对象“借给”一个请求线程。</p>
+<p>还可以通过ConcurrentMap的原子方法remove或者AtomicReference的原子方法compareAndSet来转笔可变对象的所有的所有权（但必须确保只有一个线程能接受被转移的对象）。</p>
+<h3 class="mume-header" id="%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%AF%86%E5%8F%96">双端队列与工作密取</h3>
+
+<p>Deque是一个双端队列，实现了在队头和队尾的高效插入和移除。具体实现包括ArrayList和LinkedBlockingDeque。</p>
+<p>双端队列适用于工作密取模式。</p>
+<h2 class="mume-header" id="54-%E9%98%BB%E5%A1%9E%E6%96%B9%E6%B3%95%E4%B8%8E%E4%B8%AD%E6%96%AD%E6%96%B9%E6%B3%95">5.4 阻塞方法与中断方法</h2>
+
+<ul>
+<li>传递</li>
+<li>恢复中断</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TackRunnable</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">processTack</span><span class="token punctuation">(</span>queue<span class="token punctuation">.</span><span class="token function">take</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 恢复被中断的状态</span>
+            Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">interrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</pre><h2 class="mume-header" id="55-%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7%E7%B1%BB">5.5 同步工具类</h2>
+
+<h3 class="mume-header" id="551-%E9%97%AD%E9%94%81">5.5.1 闭锁</h3>
+
+<p>CoutDwonLatch，倒计时门闩,又名闭锁、倒计时计数器，是一种同步工具类，可以延迟线程大的进度直到其到达终止状态。</p>
+<p>闭锁可以用来确保某些活动直到其他活动都完成后才能继续执行。</p>
+<ul>
+<li>确保某个计算在其需要得所有资源都被初始化之后才继续执行。二元闭锁（包括两个状态）可以用来表示“资源R已经被初始化”，而所有需要R的操作都必须现在这个闭锁上等待。</li>
+<li>确保某个服务在其依赖的所有其他服务都已经启动之后才启动。每个服务都有一个相关的二元闭锁。当启动服务S时，将首先在S依赖的其他服务的闭锁上等待，在所有依赖的服务启动后会释放锁S，这样其他依赖S的服务才能继续执行。</li>
+<li>等待直到某个操作的所有参与者（例如，在多个玩家游戏中的所有玩家）都就绪再继续执行。这种情况中，当所有玩家都准备就绪时，闭锁将到达结束状态。</li>
+</ul>
+<h3 class="mume-header" id="552-futuretask">5.5.2 FutureTask</h3>
+
+<p>FutureTask表示的计算是通过Callable来实现的，相当于一种可生成结果的Runnable，并且可以处于一下三种状态：</p>
+<ul>
+<li>等待运行(Wating to run)</li>
+<li>正在运行(Running)</li>
+<li>运行完成(Completed)</li>
+</ul>
+<h3 class="mume-header" id="%E4%BF%A1%E5%8F%B7%E9%87%8F">信号量</h3>
+
+<p>计数信号量用来控制同时访问某个某个特殊资源的操作数量，或者同时执行某个指定操作的数量。计算信号量还可以用来实现某种资源池，或者对容器施加边界。</p>
+<h3 class="mume-header" id="554-%E6%A0%85%E6%A0%8F">5.5.4 栅栏</h3>
+
+<p>栅栏类似于闭锁，他能阻塞一组线程直到某个事件发生。栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程线程。</p>
+<p>CyclicBarrier可以使一定数量的参与反复地在栅栏位置汇集，他在并行迭代算法中非常有用：这种算法通常将一个问题拆分成一系列相互独立的子问题。</p>
+<p>另一种形式的栅栏使Exchange，他是一种两方栅栏，各方在栅栏位置上交换数据。当两分法执行不对称的操作时，Exchanger会非常有用，例如当一个线程向缓冲区写入数据，而另一个线程从缓冲区读取数据。</p>
+<h2 class="mume-header" id="56-%E6%9E%84%E5%BB%BA%E9%AB%98%E6%95%88%E4%B8%94%E5%8F%AF%E4%BC%B8%E7%BC%A9%E7%9A%84%E7%BB%93%E6%9E%9C%E7%BC%93%E5%AD%98">5.6 构建高效且可伸缩的结果缓存</h2>
+
+<p>使用ConcurrentHashMap和FutureTask来构架缓存</p>
+<pre data-role="codeBlock" data-info="java" class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Computable</span><span class="token generics function"><span class="token punctuation">&lt;</span>A<span class="token punctuation">,</span> V<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    V <span class="token function">compute</span><span class="token punctuation">(</span>A arg<span class="token punctuation">)</span> <span class="token keyword">throws</span> InterruptedExcetion<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Menoizer</span><span class="token generics function"><span class="token punctuation">&lt;</span>A<span class="token punctuation">,</span> V<span class="token punctuation">></span></span> <span class="token keyword">implements</span> <span class="token class-name">Computable</span><span class="token generics function"><span class="token punctuation">&lt;</span>A<span class="token punctuation">,</span> V<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> ConcurrentMap<span class="token operator">&lt;</span>A<span class="token punctuation">,</span> Future<span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span><span class="token operator">></span> cache <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> Computable<span class="token generics function"><span class="token punctuation">&lt;</span>A<span class="token punctuation">,</span> V<span class="token punctuation">></span></span> c<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Menoizer</span><span class="token punctuation">(</span>Computable<span class="token generics function"><span class="token punctuation">&lt;</span>A<span class="token punctuation">,</span> V<span class="token punctuation">></span></span> c<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">this</span><span class="token punctuation">.</span>c <span class="token operator">=</span> c<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Future<span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span> f <span class="token operator">=</span> cache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>f <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Callable<span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span> eval <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Callable</span><span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">public</span> V <span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> InterruptedException <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> c<span class="token punctuation">.</span><span class="token function">compute</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">;</span>
+            FutureTask<span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span> ft <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FutureTask</span><span class="token generics function"><span class="token punctuation">&lt;</span>V<span class="token punctuation">></span></span><span class="token punctuation">(</span>eval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 复合操作（“若没有则添加”）</span>
+            f <span class="token operator">=</span> cache<span class="token punctuation">.</span><span class="token function">putIfAbsent</span><span class="token punctuation">(</span>arg<span class="token punctuation">,</span> ft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>f <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                f <span class="token operator">=</span> ft<span class="token punctuation">;</span>
+                ft<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">try</span><span class="token punctuation">{</span>
+            <span class="token comment">// 若正在计算，则阻塞等待结果</span>
+            <span class="token keyword">return</span> f<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">CancellationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 出现异常则去除缓存，防止缓存污染</span>
+            cache<span class="token punctuation">.</span><span class="token function">renove</span><span class="token punctuation">(</span>arg<span class="token punctuation">,</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ExecutionException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token function">launderThrowable</span><span class="token punctuation">(</span>w<span class="token punctuation">.</span><span class="token function">getCause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</pre><h2 class="mume-header" id="%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E5%B0%8F%E7%BB%93">第一部分小结</h2>
+
+<ul>
+<li>可变状态是至关重要的。<br>
+所有的并发问题都可以归结为如何协调对并发状态的访问，可变状态越少，就越容易确保线程安全。</li>
+<li>尽量将域声明为final类型，除非需要它们是可变的。</li>
+<li>不可变对象一定是线程安全的。<br>
+不可变对象能极大地降低并发编程的复杂性。它们更为简单而且安全，可以任意共享而无须使用加锁或保护性复制等机制。</li>
+<li>封装有助于管理复杂性<br>
+在编写线程安全的程序时，虽然可以将所有数据都保存在全局变量中，但为什么要这么做？将数据封装在对象中，更易于维持不变性条件：将同步机制封装在对象中，更易于遵循同步策略。</li>
+<li>用锁来保护每个可变变量。</li>
+<li>当保护同一个不变性条件中的所有变量时，要使用用一个锁。</li>
+<li>在执行复合操作期间，要持有锁。</li>
+<li>如果从多个线程中访问同一个可变变量没有同步机制，那么程序会出现问题。</li>
+<li>不要故作聪明地推断出不需要使用同步。</li>
+<li>在设计过程中考虑线程安全，或者在文档中明确地指出它不是线程安全的。</li>
+<li>将同步策略文档化。</li>
+</ul>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Netty实战》-第五章-ByteBuf</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="netty%E5%AE%9E%E6%88%98-%E7%AC%AC%E4%BA%94%E7%AB%A0-bytebuf">《Netty实战》-第五章-ByteBuf</h1>
+
+<hr>
+<h2 class="mume-header" id="51-bytebuf%E7%9A%84api">5.1 ByteBuf的API</h2>
+
+<p>Netty的数据处理API通过两个组件暴露---abstract class ByteBuf和interface ByteBufHolder。<br>
+下面是一些ByteBuf API的优点：</p>
+<ul>
+<li>他可以被用户自定义的缓冲区类型扩展</li>
+<li>通过内置的复合缓冲区类型实现了透明的零拷贝</li>
+<li>容量可以按需增长（类似于JDK的StringBuilder）</li>
+<li>在读和写这两种模式之间切换不需要调用ByteBuffer的flip()方式</li>
+<li>读和写使用不同了的索引</li>
+<li>支持方法的链式调用</li>
+<li>支持引用计数</li>
+<li>支持池化</li>
+</ul>
+<p>其他类可用于管理ByteBuf实例的分配，以及执行各种针对数据容器本身和它所持有的数据的操作。</p>
+<hr>
+<h2 class="mume-header" id="52-bytebuf%E7%B1%BB-netty%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%B9%E5%99%A8">5.2 ByteBuf类 —— Netty的数据容器</h2>
+
+<h3 class="mume-header" id="521-%E5%AE%83%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84">5.2.1 它是如何工作的</h3>
+
+<p>ByteBuf维护两个不同的索引：一个用于读取，一个用于写入。</p>
+<p>名称以read或者write开头的ByteBuf方法，将会推进其对应的索引，而名称以set或者get开头的操作则不会。后面的这些方法将一个参数传入的一个相对索引上执行操作。</p>
+<h3 class="mume-header" id="522-bytebuf%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%BC%8F">5.2.2 ByteBuf的使用模式</h3>
+
+<ol>
+<li>堆缓冲区<br>
+最常用的ByteBuf模式是将数据储存在JVM的堆空间中。这种模式被成为支撑数组。</li>
+<li>直接缓冲区<br>
+直接缓冲区是另一种ButeBuf模式，在垃圾回收之外。<br>
+3.复合缓冲区<br>
+复合缓冲区为多个ByteBuf提供了一个聚合视图，</li>
+</ol>
+<h2 class="mume-header" id="53-%E5%AD%97%E8%8A%82%E7%BA%A7%E6%93%8D%E4%BD%9C">5.3 字节级操作</h2>
+
+<h3 class="mume-header" id="531-%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E7%B4%A2%E5%BC%95">5.3.1 随机访问索引</h3>
+
+<p>BuyteBuf的索引是从零开始的：第一个字节的索引是0，最后一个字节的索引总是capacity()-1</p>
+<h3 class="mume-header" id="532-%E9%A1%BA%E5%BA%8F%E8%AE%BF%E9%97%AE%E7%B4%A2%E5%BC%95">5.3.2 顺序访问索引</h3>
+
+<p>ByteBuf同时具有读索引和写索引，但是JDK的ByteBuffer却只有一个索引，这也是为甚恶魔必须调用filp()方法来在读模式和写模式之间进行切换的原因。</p>
+<h3 class="mume-header" id="533-%E5%8F%AF%E4%B8%A2%E5%BC%83%E5%AD%97%E8%8A%82">5.3.3 可丢弃字节</h3>
+
+<h3 class="mume-header" id="534-%E5%8F%AF%E8%AF%BB%E5%AD%97%E8%8A%82">5.3.4 可读字节</h3>
+
+<p>ByteBuf的可读字节分段储存例如实际数据。新分配的、包管理的或者复制的缓冲区的默认的readerIndex的值为0。</p>
+<h3 class="mume-header" id="535-%E5%8F%AF%E5%86%99%E5%AD%97%E8%8A%82">5.3.5 可写字节</h3>
+
+<p>可写字节分段是指一个拥有未定义内容的、写入就绪的内存区域。新分配的缓冲区的writerIndex的默认值为0。</p>
+<h3 class="mume-header" id="536-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86">5.3.6 索引管理</h3>
+
+<h3 class="mume-header" id="537-%E6%9F%A5%E6%89%BE%E7%AE%A1%E7%90%86">5.3.7 查找管理</h3>
+
+<p>调用clear()比调用discardReadBytes()轻量得多，因为它将只是重置索引而不会复制任何得内存。</p>
+<h3 class="mume-header" id="537-%E6%9F%A5%E6%89%BE%E6%93%8D%E4%BD%9C">5.3.7 查找操作</h3>
+
+<p>indexOf()方法可以用来确定指定值得索引的方法。</p>
+<h3 class="mume-header" id="538-%E6%B4%BE%E7%94%9F%E7%BC%93%E5%86%B2%E5%8C%BA">5.3.8 派生缓冲区</h3>
+
+<p>派生缓冲区为ByteBuf提供了专门的方式来呈现其内容的视图。这类视图是通过一下方法被创建的：</p>
+<ul>
+<li>duplicate()</li>
+<li>slice()</li>
+<li>slice(int, int)</li>
+<li>Unpoooled.unmodifiableBuffer { ... }</li>
+<li>order(ByteOrder)</li>
+<li>readSlice(int)</li>
+</ul>
+<p>每个这些方法都将返回一个新的ByteBuf实例，它具有自己的读索引、写索引和标记索引。</p>
+<p><strong>BYteBuf复制</strong> 如果需要一个现有缓冲区的真实副本，请使用copy()或者copy(int, int)方法。不同于派生缓冲区，由于这个调用所返回的ByteBuf拥有独立的数据副本。</p>
+<h3 class="mume-header" id="539-%E8%AF%BB%E5%86%99%E6%93%8D%E4%BD%9C">5.3.9 读/写操作</h3>
+
+<p>netty有两种类别的读/写操作。</p>
+<ul>
+<li>get()和set()操作，从给定的索引开始，并且保持索引不变。</li>
+<li>read()和write()操作，从给定的索引开始，并且会根据已经访问过的字节数对索引进行掉整。</li>
+</ul>
+<h3 class="mume-header" id="5310-%E6%9B%B4%E5%A4%9A%E7%9A%84%E6%93%8D%E4%BD%9C">5.3.10 更多的操作</h3>
+
+<h2 class="mume-header" id="bytebufholder%E6%8E%A5%E5%8F%A3">ByteBufHolder接口</h2>
+
+<p>ByteBufHolder有几种用于访问底层数据和引用计算的方法。</p>
+<h2 class="mume-header" id="55-bytebuf%E5%88%86%E9%85%8D">5.5 ByteBuf分配</h2>
+
+<h3 class="mume-header" id="551-%E6%8C%89%E9%9C%80%E5%88%86%E9%85%8Dbytebufallocator%E6%8E%A5%E5%8F%A3">5.5.1 按需分配：ByteBufAllocator接口</h3>
+
+<p>为了降低分配和释放内存的开销，Netty通过interface ByteBufAllocator实现了(ByteBuf的)池化，它可以用来分配我们所描述过的任意类型的ByteBuf实例。使用池化是应用程序的决定，其并不会以任何方式改变ByteBuf API(的语义)。</p>
+<p>Netty提供了两种ByteBufAllocator的实现：<strong>PooledByteBufAllocator</strong>和<strong>UnpooledByteBufAllocator</strong>。前者池化了ByteBuf的实例以提高性能并最大限度地减少内存碎片.此实现使用了一种为jemalloc的已被大量现代操作系统所采用的高效方法来分配内存。后者的实现不池化ByteBuf实例，并且在每次被它调用时都会返回一个新的实例。</p>
+<h3 class="mume-header" id="552-unpooled%E7%BC%93%E5%86%B2%E5%8C%BA">5.5.2 Unpooled缓冲区</h3>
+
+<p>Unpooled的工具类提供了静态的辅助方法来创建未池化的ByteBuf实例。</p>
+<h3 class="mume-header" id="553-bytebufutil%E7%B1%BB">5.5.3 ByteBufUtil类</h3>
+
+<p>ByteBufUtil.hexdump()方法以十六进制的表示形式打印bytebuf的内容。</p>
+<h2 class="mume-header" id="56-%E5%BC%95%E7%94%A8%E8%AE%A1%E7%AE%97">5.6 引用计算</h2>
+
+<p>引用计算是一种通过在某个对象所持有的资源不再被其他对象引用时释放该对象所持有的资源来优化内存使用和性能的技术。ByteBuf和BytebufHolder引入了引用计数计数，它们都实现了interface ReferenceCounted。</p>
+<h2 class="mume-header" id="57-%E5%B0%8F%E7%BB%93">5.7 小结</h2>
+
+<p>ByteBuf的要点：</p>
+<ul>
+<li>使用不同的读索引和写索引来控制数据访问。</li>
+<li>使用内存的不同方式——基于字节数组和直接缓冲区</li>
+<li>通过CompositeByteBuf生成多个ByteBuf的聚合视图</li>
+<li>数据访问方法——搜索、切片以及复制</li>
+<li>读、写、获取和设置API</li>
+<li>ByteBufAllocator池化和引用计算</li>
+</ul>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>

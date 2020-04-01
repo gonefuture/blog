@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-11 第12章 并发程序的测试</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC12%E7%AB%A0-%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95">第12章 并发程序的测试</h1>
+
+<hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>
+响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 class="mume-header" id="121-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95">12.1 正确性测试</h2>
+
+<p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析---找出需要检查的不变性条件和后验条件。</p>
+<h3 class="mume-header" id="1211-%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">12.1.1 基本的单元测试</h3>
+
+<p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
+<h3 class="mume-header" id="1212-%E5%AF%B9%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.2 对阻塞操作的测试</h3>
+
+<p>在测试并发的基本属性时，需要引入多个线程。</p>
+<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性---其主要作用还是作为调试信息的来源。</p>
+<h3 class="mume-header" id="1213-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95">12.1.3 安全性测试</h3>
+
+<blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 class="mume-header" id="1214-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.4 资源管理的测试</h3>
+
+<h3 class="mume-header" id="1215-%E4%BD%BF%E7%94%A8%E5%9B%9E%E8%B0%83">12.1.5 使用回调</h3>
+
+<p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
+<h3 class="mume-header" id="1216-%E4%BA%A7%E7%94%9F%E8%B7%9F%E5%A4%9A%E7%9A%84%E4%BA%A4%E6%9B%BF%E6%93%8D%E4%BD%9C">12.1.6 产生跟多的交替操作</h3>
+
+<p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
+<h2 class="mume-header" id="122-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">12.2 性能测试</h2>
+
+<h3 class="mume-header" id="1221-%E5%9C%A8puttaketest%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%AE%A1%E6%97%B6%E5%8A%9F%E8%83%BD">12.2.1 在PutTakeTest中增加计时功能</h3>
+
+<h3 class="mume-header" id="1222-%E5%A4%9A%E7%A7%8D%E7%AE%97%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83">12.2.2 多种算法的比较</h3>
+
+<h3 class="mume-header" id="%E5%93%8D%E5%BA%94%E6%80%A7%E8%A1%A1%E9%87%8F">响应性衡量</h3>
+
+<p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>
+除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
+<h2 class="mume-header" id="123-%E9%81%BF%E5%85%8D%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1">12.3 避免性能测试的陷阱</h2>
+
+<h3 class="mume-header" id="1231-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">12.3.1 垃圾回收</h3>
+
+<p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
+<h3 class="mume-header" id="1232-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91">12.3.2 动态编译</h3>
+
+<p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
+<h3 class="mume-header" id="1233-%E5%AF%B9%E4%BB%A3%E7%A0%81%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%8D%E7%9C%9F%E5%AE%9E%E9%87%87%E9%9B%86">12.3.3 对代码路径的不真实采集</h3>
+
+<p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
+<h3 class="mume-header" id="1234-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%9A%84%E7%AB%9E%E4%BA%89%E7%A8%8B%E5%BA%A6">12.3.4 不真实的竞争程度</h3>
+
+<p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
+<h3 class="mume-header" id="1235-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%B6%88%E9%99%A4">12.3.5 无用代码的消除</h3>
+
+<blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 class="mume-header" id="124-%E5%85%B6%E4%BB%96%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95">12.4 其他的测试方法</h2>
+
+<p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
+<h3 class="mume-header" id="1241-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5">12.4.1 代码审查</h3>
+
+<p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
+<h3 class="mume-header" id="1242-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7">12.4.2 静态分析工具</h3>
+
+<p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
+<p>FindBUgs包含的检测器：</p>
+<ul>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>
+标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>
+双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>
+如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>
+如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>
+如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>
+当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
+</ul>
+<h3 class="mume-header" id="1243-%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%9A%84%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF">12.4.3 面向方面的测试技术</h3>
+
+<p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
+<h3 class="mume-header" id="1244-%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B%E5%B7%A5%E5%85%B7">12.4.4 分析与监测工具</h3>
+
+<p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
+<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
+
+<p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
